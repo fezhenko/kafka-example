@@ -32,20 +32,17 @@ public class ProducerDemoCallback {
             for (int i = 0; i < 30; i++) {
                 kafkaProducer.send(
                         new ProducerRecord<>("fzhnk.kafka.example", "example-message" + i),
-                        new Callback() {
-                            @Override
-                            public void onCompletion(RecordMetadata recordMetadata, Exception e) {
-                                // execute every time a record successfully sent
-                                if (e == null) {
-                                    log.info("Message sent successfully");
-                                    log.info("Received new metadata: {}", recordMetadata);
-                                    log.info("Topic: {}", recordMetadata.topic());
-                                    log.info("Received offset: {}", recordMetadata.offset());
-                                    log.info("Partition: {}", recordMetadata.partition());
-                                    log.info("Timestamp: {}", recordMetadata.timestamp());
-                                } else {
-                                    log.error("Error occurred while sending message", e);
-                                }
+                        (recordMetadata, e) -> {
+                            // execute every time a record successfully sent
+                            if (e == null) {
+                                log.info("Message sent successfully");
+                                log.info("Received new metadata: {}", recordMetadata);
+                                log.info("Topic: {}", recordMetadata.topic());
+                                log.info("Received offset: {}", recordMetadata.offset());
+                                log.info("Partition: {}", recordMetadata.partition());
+                                log.info("Timestamp: {}", recordMetadata.timestamp());
+                            } else {
+                                log.error("Error occurred while sending message", e);
                             }
                         }
                 );

@@ -39,17 +39,14 @@ public class ProducerDemoKeys {
 
                 kafkaProducer.send(
                         new ProducerRecord<>(topic, key, value),
-                        new Callback() {
-                            @Override
-                            public void onCompletion(RecordMetadata recordMetadata, Exception e) {
-                                // execute every time a record successfully sent
-                                if (e == null) {
-                                    log.info("Topic: {}", recordMetadata.topic());
-                                    log.info("key={} value={}", key, value);
-                                    log.info("Partition: {}", recordMetadata.partition());
-                                } else {
-                                    log.error("Error occurred while sending message", e);
-                                }
+                        (recordMetadata, e) -> {
+                            // execute every time a record successfully sent
+                            if (e == null) {
+                                log.info("Topic: {}", recordMetadata.topic());
+                                log.info("key={} value={}", key, value);
+                                log.info("Partition: {}", recordMetadata.partition());
+                            } else {
+                                log.error("Error occurred while sending message", e);
                             }
                         }
                 );
